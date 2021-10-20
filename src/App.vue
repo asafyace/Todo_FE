@@ -7,6 +7,7 @@
 <script>
 import Todos from "./components/Todos";
 import AddTodo from "./components/AddTodo";
+
 export default {
   name: "app",
   components: {
@@ -55,4 +56,30 @@ export default {
 };
 </script>
 <style>
+.complete {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+form {
+  text-align: right;
+}
+h2 {
+  text-align: center;
+}
+body {
+  background: radial-gradient(circle, lightblue, white);
+  font-family: "Noto Serif Armenian", "Noto Serif Georgian", "Noto Serif", serif;
+  text-align: left;
+}
+ul,
+li {
+  margin: auto;
+  width: 50%;
+}
 </style>
