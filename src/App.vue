@@ -5,6 +5,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import Todos from "./components/Todos";
 import AddTodo from "./components/AddTodo";
 
@@ -16,41 +17,81 @@ export default {
   },
   data() {
     return {
-      todos: [
-        {
-          id: 1,
-          title: "Go workout",
-          completed: false,
-        },
-        {
-          id: 2,
-          title: "Do laundry",
-          completed: false,
-        },
-        {
-          id: 3,
-          title: "Cook food",
-          completed: false,
-        },
-        {
-          id: 4,
-          title: "Clean up room",
-          completed: false,
-        },
-        {
-          i: 5,
-          title: "Finish work",
-          completed: false,
-        },
-      ],
+      todos: [],
     };
+  },
+  created() {
+    this.getData();
   },
   methods: {
     addTodo(newTodoObj) {
       this.todos = [...this.todos, newTodoObj];
+      var axios = require("axios");
+      var data = JSON.stringify({
+        id: this.todos.length + 1,
+        title: "newTodoObj",
+        completed: true,
+      });
+
+      var config = {
+        method: "post",
+        url: "https://localhost:44368/api/Todo",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     deleteTodo(todoId) {
       this.todos = this.todos.filter((todo) => todo.id !== todoId);
+      var axios = require("axios");
+      var data = "";
+
+      var config = {
+        method: "delete",
+        url: "https://localhost:44368/api/Todo?id=" + todoId,
+        headers: {},
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getData() {
+      axios
+        .get(
+          "https://localhost:44368/api/Todo",
+          {
+            withCredentials: false,
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          },
+          {}
+        )
+        .then((todos) => {
+          this.todos = todos.data;
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(" Error is: " + error);
+        });
     },
   },
 };
