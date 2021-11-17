@@ -53,6 +53,20 @@ export default {
         });
     },
     addTodo(newTodoObj) {
+      if (this.todos.length > 0) {
+        console.log("before change:" + this.idCount);
+        console.log(this.todos);
+        var biggestId = 1;
+        for (let i = 0; i < this.todos.length; i++) {
+          if (this.todos[i].id > biggestId) {
+            biggestId = this.todos[i].id;
+          }
+        }
+        if (biggestId > this.idCount) {
+          this.idCount = biggestId + 1;
+        }
+        console.log("Bigger size of array:" + this.idCount);
+      }
       console.log("This is Add in app vue");
       this.todos = [...this.todos, newTodoObj];
       var axios = require("axios");
@@ -104,27 +118,61 @@ export default {
     },
     editTodo(todoId) {
       console.log("This is edit in app.vue");
-
       console.log("To do id from function call " + todoId);
+      var titleDisplay = "";
+      for (let i = 0; i < this.todos.length; i++) {
+        if (this.todos[i].id == todoId) {
+          titleDisplay = this.todos[i].title;
+        }
+      }
+      var input = prompt("Please re-write task", titleDisplay);
+      console.log(input);
+      console.log(this.todos);
 
-      this.todos = this.todos.filter((todo) => todo.id !== todoId);
+      for (let i = 0; i < this.todos.length; i++) {
+        if (this.todos[i].id == todoId) {
+          this.todos[i].title = input;
+        }
+      }
+      console.log(this.todos);
       var axios = require("axios");
       var data = "";
       var config = {
-        method: "delete",
-        url: "https://localhost:5001/api/Todo?id=" + todoId,
-        headers: {},
-        data: data,
+        method: "get",
+        url: "https://localhost:5001/api/Todo/" + todoId,
+        withCredentials: false,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       };
-
+      console.log(config);
       axios(config)
         .then(function (response) {
           console.log(JSON.stringify(response.data));
+          response.data.title = input;
+          data = JSON.stringify(response.data);
+          var url = "https://localhost:5001/api/Todo?id=" + todoId;
+          var config = {
+            method: "put",
+            url: url,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data: data,
+          };
+
+          axios(config)
+            .then(function (response) {
+              console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         })
         .catch(function (error) {
           console.log(error);
         });
-      //this.idCount++;
     },
   },
 };
@@ -144,7 +192,7 @@ export default {
   font-size: 18px;
 }
 .Edit {
-  background-color: greenyellow; /* red */
+  background-color: gray; /* red */
   border: none;
   color: white;
   padding: 5px 10px;
@@ -155,6 +203,13 @@ export default {
 }
 .Edit:hover {
   font-size: 18px;
+}
+.task {
+  font-size: 14px;
+}
+.task:hover {
+  cursor: pointer;
+  background-color: grey;
 }
 form {
   text-align: right;
