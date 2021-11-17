@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <Todos v-bind:todos="todos" v-on:delete-todo="deleteTodo" />
+    <Todos
+      v-bind:todos="todos"
+      v-on:delete-todo="deleteTodo"
+      v-on:edit-todo="editTodo"
+    />
     <AddTodo v-on:add-todo="addTodo" />
   </div>
 </template>
@@ -18,62 +22,17 @@ export default {
   data() {
     return {
       todos: [],
+      idCount: 1,
     };
   },
   created() {
     this.getData();
   },
   methods: {
-    addTodo(newTodoObj) {
-      this.todos = [...this.todos, newTodoObj];
-      var axios = require("axios");
-      var data = JSON.stringify({
-        id: this.todos.length + 1,
-        title: "newTodoObj",
-        completed: true,
-      });
-
-      var config = {
-        method: "post",
-        url: "https://localhost:44368/api/Todo",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
-
-      axios(config)
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    deleteTodo(todoId) {
-      this.todos = this.todos.filter((todo) => todo.id !== todoId);
-      var axios = require("axios");
-      var data = "";
-
-      var config = {
-        method: "delete",
-        url: "https://localhost:44368/api/Todo?id=" + todoId,
-        headers: {},
-        data: data,
-      };
-
-      axios(config)
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     getData() {
       axios
         .get(
-          "https://localhost:44368/api/Todo",
+          "https://localhost:5001/api/Todo",
           {
             withCredentials: false,
             headers: {
@@ -93,12 +52,86 @@ export default {
           console.log(" Error is: " + error);
         });
     },
+    addTodo(newTodoObj) {
+      console.log("This is Add in app vue");
+      this.todos = [...this.todos, newTodoObj];
+      var axios = require("axios");
+      var data = JSON.stringify({
+        id: this.idCount,
+        title: newTodoObj.title,
+        completed: false,
+      });
+      var config = {
+        method: "post",
+        url: "https://localhost:5001/api/Todo",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      this.idCount++;
+    },
+    deleteTodo(todoId) {
+      console.log("This is delete in app.vue");
+
+      console.log("To do id from function call " + todoId);
+
+      this.todos = this.todos.filter((todo) => todo.id !== todoId);
+      var axios = require("axios");
+      var data = "";
+      var config = {
+        method: "delete",
+        url: "https://localhost:5001/api/Todo?id=" + todoId,
+        headers: {},
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      //this.idCount++;
+    },
+    editTodo(todoId) {
+      console.log("This is edit in app.vue");
+
+      console.log("To do id from function call " + todoId);
+
+      this.todos = this.todos.filter((todo) => todo.id !== todoId);
+      var axios = require("axios");
+      var data = "";
+      var config = {
+        method: "delete",
+        url: "https://localhost:5001/api/Todo?id=" + todoId,
+        headers: {},
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      //this.idCount++;
+    },
   },
 };
 </script>
 <style>
 .complete {
-  background-color: #4caf50; /* Green */
+  background-color: #f44336; /* red */
   border: none;
   color: white;
   padding: 5px 10px;
@@ -106,6 +139,22 @@ export default {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
+}
+.complete:hover {
+  font-size: 18px;
+}
+.Edit {
+  background-color: greenyellow; /* red */
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.Edit:hover {
+  font-size: 18px;
 }
 form {
   text-align: right;
@@ -120,6 +169,7 @@ body {
 }
 ul,
 li {
+  list-style-type: circle;
   margin: auto;
   width: 50%;
 }

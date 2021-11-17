@@ -1,11 +1,12 @@
 <template>
   <div>
-    <h2>My Todo List</h2>
+    <h2>My To Do List</h2>
     <ul>
       <li v-bind:key="todo.id" v-for="todo in todos">
         <Todo
           v-bind:todo="todo"
           v-on:delete-todo="$emit('delete-todo', todo.id)"
+          v-on:edit-todo="$emit('edit-todo', todo.id)"
         />
       </li>
     </ul>
@@ -19,6 +20,7 @@ export default {
     Todo,
   },
   props: ["todos"],
+  methods: {},
 };
 </script>
 <style scoped>

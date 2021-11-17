@@ -2,7 +2,7 @@
   <div>
     <form @submit="addTodo">
       <input type="text" v-model="title" name="title" />
-      <button  type="submit">Add</button>
+      <button type="submit">Add</button>
     </form>
   </div>
 </template>
@@ -13,18 +13,21 @@ export default {
   data() {
     return {
       title: "",
+      idCount: 1,
     };
   },
   methods: {
     addTodo(e) {
+      console.log("This is add in AddTodo.vue");
       e.preventDefault();
       const newTodoObj = {
-        id: uuid.v4(),
+        id: this.idCount,
         title: this.title,
         completed: false,
       };
       this.$emit("add-todo", newTodoObj);
       this.title = "";
+      this.idCount++;
     },
   },
 };
